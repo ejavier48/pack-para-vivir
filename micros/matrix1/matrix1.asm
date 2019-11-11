@@ -2,6 +2,7 @@
 .def row=r16
 .def col=r17
 .def aux=r18
+.def cont=r19
 
 rjmp main
 .org $009
@@ -15,41 +16,44 @@ main:
     ser row
     out ddra, row
     out ddrc, row
-    ldi row, 3
+    ldi row, 2
     out tccr0, row
     ldi row, 1
     out timsk, row
-    ldi ZL, (mat<<1)
-    ldi ZH, (mat<<1)
+    ldi ZL, low(mat<<1)
+    ldi ZH, high(mat<<1)
     lpm row, z+
-    ldi col, $7F
+    ldi col, $80
     ldi aux, $00
-    sec
+	ldi cont, $00
     sei
 loop:
     out porta, row
     out portc, col
     rjmp loop
 change:
+	inc cont
+	cpi cont, 2
+	brlo return
+	clr cont
     inc aux
     cpi aux, 8
     brsh restart
-    sec
     ldi row, $00
     out porta, row
-    ror col
+    lsr col
     lpm row, z+
     reti
  restart:
     clr aux
-    ldi col, $7F
-    ldi ZL, (mat<<1)
-    ldi ZH, (mat<<1)
-	sec
+    ldi col, $80
+    ldi ZL, low(mat<<1)
+    ldi ZH, high(mat<<1)
     ldi row, $00
     out porta, row
-    ror col
     lpm row, z+
     reti
+return:
+	reti
 mat:
-    .db $FF, $81, $BD, $A5, $B5, $85, $FD, $01
+    .db $00, $7E, $42, $5A, $4A, $7A, $02, $FE
