@@ -59,7 +59,7 @@ decenas:
 show:
     ldi ZL, 21
     add ZL, conta
-    ld unid, ZL
+    ld unid, z
     out PORTC, unid
     ldi ZL, 21
     add ZL, dece

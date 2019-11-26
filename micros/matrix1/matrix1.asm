@@ -9,7 +9,7 @@
 .def cont=r19
 
 rjmp main
-.org $009
+.org $9
 rjmp change
 
 main:
